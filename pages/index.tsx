@@ -13,11 +13,35 @@ import {
 	Award,
 	HardHat
 } from "lucide-react";
+import { useState } from "react";
 
 const picsum = (w: number, h: number, seed: number) =>
 	`https://picsum.photos/seed/${seed}/${w}/${h}`;
 
 export default function HomePage() {
+	const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+
+	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		setStatus("submitting");
+
+		const form = event.currentTarget;
+		const formData = new FormData(form);
+
+		try {
+			await fetch("/__forms.html", {
+				method: "POST",
+				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				body: new URLSearchParams(formData as any).toString(),
+			});
+			setStatus("success");
+			form.reset();
+		} catch (error) {
+			console.error("Form submission error:", error);
+			setStatus("error");
+		}
+	};
+
 	return (
 		<main className="font-sans text-gray-800">
 			{/* HERO */}
@@ -259,6 +283,7 @@ export default function HomePage() {
 					method="POST"
 					data-netlify="true"
 					netlify-honeypot="bot-field"
+					onSubmit={handleFormSubmit}
 					className="max-w-2xl mx-auto mt-10 grid grid-cols-1 gap-4 px-4"
 				>
 					<input type="hidden" name="form-name" value="contact" />
@@ -268,39 +293,21 @@ export default function HomePage() {
 						</label>
 					</p>
 
-					<input
-						type="text"
-						name="name"
-						placeholder="Name"
-						className="p-3 rounded border"
-						required
-					/>
-					<input
-						type="email"
-						name="email"
-						placeholder="Email"
-						className="p-3 rounded border"
-						required
-					/>
-					<input
-						type="tel"
-						name="phone"
-						placeholder="Phone"
-						className="p-3 rounded border"
-					/>
-					<textarea
-						name="message"
-						placeholder="Message"
-						rows={5}
-						className="p-3 rounded border"
-						required
-					/>
+					<input type="text" name="name" placeholder="Name" className="p-3 rounded border" required />
+					<input type="email" name="email" placeholder="Email" className="p-3 rounded border" required />
+					<input type="tel" name="phone" placeholder="Phone" className="p-3 rounded border" />
+					<textarea name="message" placeholder="Message" rows={5} className="p-3 rounded border" required />
+
 					<button
 						type="submit"
+						disabled={status === "submitting"}
 						className="bg-[#556B2F] text-white px-6 py-3 rounded-lg hover:opacity-90 font-semibold"
 					>
-						Send
+						{status === "submitting" ? "Sending..." : "Send"}
 					</button>
+
+					{status === "success" && <p className="text-green-700 mt-2">Message sent successfully!</p>}
+					{status === "error" && <p className="text-red-700 mt-2">Something went wrong. Please try again.</p>}
 				</form>
 			</section>
 
