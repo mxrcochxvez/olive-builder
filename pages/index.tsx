@@ -253,15 +253,52 @@ export default function HomePage() {
 
 			{/* CONTACT */}
 			<section id="contact" className="py-16 bg-[#F5F5DC]">
-				<h2 className="text-center text-3xl font-bold text-[#556B2F]">
-					Contact Us
-				</h2>
-				<form className="max-w-2xl mx-auto mt-10 grid grid-cols-1 gap-4 px-4">
-					<input type="text" placeholder="Name" className="p-3 rounded border" />
-					<input type="email" placeholder="Email" className="p-3 rounded border" />
-					<input type="tel" placeholder="Phone" className="p-3 rounded border" />
-					<textarea placeholder="Message" rows={5} className="p-3 rounded border" />
-					<button className="bg-[#556B2F] text-white px-6 py-3 rounded-lg hover:opacity-90 font-semibold">
+				<h2 className="text-center text-3xl font-bold text-[#556B2F]">Contact Us</h2>
+				<form
+					name="contact"
+					method="POST"
+					data-netlify="true"
+					netlify-honeypot="bot-field"
+					className="max-w-2xl mx-auto mt-10 grid grid-cols-1 gap-4 px-4"
+				>
+					<input type="hidden" name="form-name" value="contact" />
+					<p className="hidden">
+						<label>
+							Don’t fill this out: <input name="bot-field" />
+						</label>
+					</p>
+
+					<input
+						type="text"
+						name="name"
+						placeholder="Name"
+						className="p-3 rounded border"
+						required
+					/>
+					<input
+						type="email"
+						name="email"
+						placeholder="Email"
+						className="p-3 rounded border"
+						required
+					/>
+					<input
+						type="tel"
+						name="phone"
+						placeholder="Phone"
+						className="p-3 rounded border"
+					/>
+					<textarea
+						name="message"
+						placeholder="Message"
+						rows={5}
+						className="p-3 rounded border"
+						required
+					/>
+					<button
+						type="submit"
+						className="bg-[#556B2F] text-white px-6 py-3 rounded-lg hover:opacity-90 font-semibold"
+					>
 						Send
 					</button>
 				</form>
